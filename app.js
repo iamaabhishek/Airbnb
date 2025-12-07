@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Listing = require('./models/listing.js');
 const methodOverride = require('method-override')
-
+const ejsMate = require('ejs-mate')
 
 
 
@@ -15,6 +15,8 @@ app.set("view engine","ejs")
 app.set("views",path.join(__dirname,"views"))
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+app.engine('ejs',ejsMate);
+app.use(express.static(path.join(__dirname,"/public")));
 
 
 
@@ -82,6 +84,12 @@ app.put("/listings/:id", async (req, res) => {
 });
 
 
+app.delete("/listings/:id",async (req,res) =>{
+    let {id} = req.params;
+    let deletedListing =  await Listing.findByIdAndDelete(id)
+    console.log(deletedListing);
+    res.redirect('/listings');
+})
 
 
 
